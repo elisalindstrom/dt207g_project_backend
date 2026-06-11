@@ -6,14 +6,16 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const port = process.env.PORT || 3000;
 
-/* Läs in routes
-const authRoutes = require("./routes/authRoutes.js")
+/* const authRoutes = require("./routes/authRoutes.js")
 app.use("/users", authRoutes); */
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 
+// Läs in routes
+const menuRoutes = require("./routes/menuRoutes")
+app.use("/api/menu", menuRoutes)
 
 // Starta server
 app.listen(port, () => {
