@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Menu = require("../models/Menu");
+const authenticateToken = require("../middleware/authToken");
 
+// Hämta hela menyn
 router.get("/", async (req, res) => {
     try {
         let result = await Menu.find();
@@ -11,7 +13,7 @@ router.get("/", async (req, res) => {
     }
 })
 
-// Hämta dokument
+// Hämta dokument (maträtt) från menyn
 router.get("/:id", async (req, res) => {
     try {
         let result = await Menu.findById(req.params.id);
@@ -24,8 +26,9 @@ router.get("/:id", async (req, res) => {
     }
 })
 
+// SKYDDADE ROUTES
 // Lägg till
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
     try {
         const { title, description, price } = req.body;
 
@@ -41,7 +44,7 @@ router.post("/", async (req, res) => {
 })
 
 // Ta bort
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
     try {
         let result = await Menu.findByIdAndDelete(req.params.id);
 
@@ -55,7 +58,7 @@ router.delete("/:id", async (req, res) => {
 })
 
 // Ändra
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, async (req, res) => {
     try {
         const result = await Menu.findByIdAndUpdate(req.params.id, req.body, { returnDocument: "after", runValidators: true });
 

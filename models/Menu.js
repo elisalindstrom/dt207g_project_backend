@@ -7,4 +7,5 @@ const MenuSchema = new mongoose.Schema({
     price: { type: Number, required: [true, "Pris krävs"] }
 })
 
+// Export av model
 module.exports = mongoose.model("Menu", MenuSchema);
