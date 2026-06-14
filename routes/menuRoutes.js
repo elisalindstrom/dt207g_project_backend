@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
         let result = await Menu.find();
         return res.json(result);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 })
 
@@ -18,11 +18,11 @@ router.get("/:id", async (req, res) => {
     try {
         let result = await Menu.findById(req.params.id);
 
-        if (!result) return res.status(404).json({ message: "Menu item not found" });
+        if (!result) return res.status(404).json({ message: "Menyalternativet kunde inte hittas" });
 
         return res.json(result);
     } catch (error) {
-        return res.status(500).json({ message: "Menu item could not be found" });
+        return res.status(500).json({ message: error.message });
     }
 })
 
@@ -32,14 +32,14 @@ router.post("/", authenticateToken, async (req, res) => {
     try {
         const { title, description, price } = req.body;
 
-        if (!title || !description || !price) return res.status(400).json({ message: "Titel, beskrivning och pris behöver anges" });
+        if (!title || !description || !price) return res.status(400).json({ message: "Fyll i titel, beskrivning och pris" });
 
         const item = new Menu({ title, description, price });
         await item.save();
 
-        return res.json({ item, message: "Menu item created" });
+        return res.json({ item, message: "Ny rätt skapad" });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 })
 
@@ -49,11 +49,11 @@ router.delete("/:id", authenticateToken, async (req, res) => {
         let result = await Menu.findByIdAndDelete(req.params.id);
 
         // Kontroll om något dokument med rätt ID hittats
-        if (!result) return res.status(404).json({ message: "Menu item not found" });
+        if (!result) return res.status(404).json({ message: "Menyalternativet kunde inte hittas" });
 
-        return res.json({ result, message: "Deleted" });
+        return res.json({ result, message: "Borttagen" });
     } catch (error) {
-        return res.status(500).json({ message: "Menu item could not be deleted" });
+        return res.status(500).json({ message: error.message });
     }
 })
 
@@ -62,11 +62,11 @@ router.put("/:id", authenticateToken, async (req, res) => {
     try {
         const result = await Menu.findByIdAndUpdate(req.params.id, req.body, { returnDocument: "after", runValidators: true });
 
-        if (!result) return res.status(404).json({ message: "Menu item not found" });
+        if (!result) return res.status(404).json({ message: "Menyalternativet kunde inte hittas" });
 
-        return res.json({ result, message: "Update successful" });
+        return res.json({ result, message: "Uppdatering lyckad" });
     } catch (error) {
-        return res.status(500).json({ message: "Menu item could not be updated" });
+        return res.status(500).json({ message: error.message });
     }
 })
 
