@@ -4,8 +4,8 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("../middleware/authToken"); // Middleware
 
-// Registrering
-router.post("/register", async (req, res) => {
+// Skyddad route för registrering av användarkonton
+router.post("/register", authenticateToken, async (req, res) => {
     try {
         const { username, password } = req.body; // Data från request body
 

@@ -37,7 +37,7 @@ router.post("/", authenticateToken, async (req, res) => {
         const item = new Menu({ title, description, price });
         await item.save();
 
-        return res.json({ item, message: "Ny rätt skapad" });
+        return res.status(201).json({ item, message: "Ny rätt skapad!" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -51,7 +51,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
         // Kontroll om något dokument med rätt ID hittats
         if (!result) return res.status(404).json({ message: "Menyalternativet kunde inte hittas" });
 
-        return res.json({ result, message: "Borttagen" });
+        return res.status(200).json({ result, message: "Borttagen" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -64,7 +64,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
 
         if (!result) return res.status(404).json({ message: "Menyalternativet kunde inte hittas" });
 
-        return res.json({ result, message: "Uppdatering lyckad" });
+        return res.status(200).json({ result, message: "Rätten uppdaterad!" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
