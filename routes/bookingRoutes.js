@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 // Hämta bokningar
 router.get("/", authenticateToken, async (req, res) => {
     try {
-        let result = await Booking.find();
+        let result = await Booking.find().sort({ date: 1, time: 1 });
         return res.json(result);
     } catch (error) {
         return res.status(500).json({ message: error.message });
