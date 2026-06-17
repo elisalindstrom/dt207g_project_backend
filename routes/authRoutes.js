@@ -12,11 +12,13 @@ router.post("/register", authenticateToken, async (req, res) => {
         // Validering
         if (!username || !password) return res.status(400).json({ message: "Ange användarnamn och lösenord" });
 
-        const user = new User({ username, password });
-        await user.save();
+        await User.register(username, password);
 
         return res.status(201).json({ message: "Användare skapad" });
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({error: "Användarnamn upptaget"});
+        }
         return res.status(500).json({ message: error.message });
     }
 })
@@ -29,13 +31,8 @@ router.post("/login", async (req, res) => {
         // Validering
         if (!username || !password) return res.status(400).json({ message: "Ange användarnamn och lösenord" });
 
-        // Kontroll användarnamn
-        let user = await User.findOne({ username: username });
-        if (!user) return res.status(401).json({ message: "Fel användarnamn eller lösenord" });
-
-        // Kontroll lösenord
-        const isPasswordMatch = await user.comparePassword(password);
-        if (!isPasswordMatch) return res.status(401).json({ message: "Fel användarnamn eller lösenord" });
+        // Kontroll användarnamn + lösenord
+        let user = await User.login(username, password);
 
         // Skapar JWT-token
         const payload = { username };

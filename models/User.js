@@ -1,20 +1,22 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-// Schema
+// Schema User
 const UserSchema = new mongoose.Schema({
-    username: { type: String, required: [true, "Username required"], unique: true, trim: true },
-    password: { type: String, required: [true, "Password required"] },
+    username: { type: String, required: [true, "Användarnamn krävs"], unique: true, trim: true },
+    password: { type: String, required: [true, "Lösenord krävs"] },
     created: { type: Date, default: Date.now }
 })
 
 // Hashning av lösenord innan user lagras
-UserSchema.pre("save", async function () {
+UserSchema.pre("save", async function (next) {
     try {
         if (this.isNew || this.isModified("password")) {
             const hashedPassword = await bcrypt.hash(this.password, 10);
             this.password = hashedPassword;
         }
+
+        next();
     } catch (error) {
         next(error);
     }
@@ -43,18 +45,18 @@ UserSchema.methods.comparePassword = async function (password) {
 // Inloggning
 UserSchema.statics.login = async function (username, password) {
     try {
-        // Kontroll av user
+        // Kontroll av användarnamn
         const user = await this.findOne({ username });
 
         if (!user) {
-            throw new Error("User not found")
+            throw new Error("Fel användarnamn eller lösenord");
         }
 
-        // Använder funktion för jämförelse av lösenord
+        // Kontroll lösenord
         const isPasswordMatch = await user.comparePassword(password);
 
         if (!isPasswordMatch) {
-            throw new Error("Incorrect password")
+            throw new Error("Fel användarnamn eller lösenord");
         }
 
         return user;

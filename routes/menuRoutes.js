@@ -60,6 +60,10 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 // Ändra
 router.put("/:id", authenticateToken, async (req, res) => {
     try {
+        const { title, description, price } = req.body;
+
+        if (!title || !description || !price) return res.status(400).json({ message: "Fyll i titel, beskrivning och pris" });
+
         const result = await Menu.findByIdAndUpdate(req.params.id, req.body, { returnDocument: "after", runValidators: true });
 
         if (!result) return res.status(404).json({ message: "Menyalternativet kunde inte hittas" });

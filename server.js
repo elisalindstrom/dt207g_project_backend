@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./db") // Koppling till databas
-const jwt = require("jsonwebtoken");
 
 const app = express();
 const port = process.env.PORT || 3000;
